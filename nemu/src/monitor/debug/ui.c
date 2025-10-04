@@ -40,6 +40,8 @@ static int cmd_info(char *args);
 
 static int cmd_x(char *args);
 
+static int cmd_p(char *args);
+
 static struct {
   char *name;
   char *description;
@@ -52,6 +54,7 @@ static struct {
     {"si", "Step through the program for N instructions", cmd_si},
     {"info", "Print register state or watchpoint state", cmd_info},
     {"x", "Scan memory", cmd_x},
+    {"p", "Print the value of the expression", cmd_p},
 };
 
 #define NR_CMD (sizeof(cmd_table) / sizeof(cmd_table[0]))
@@ -130,6 +133,21 @@ static int cmd_x(char *args) {
 	if (i % 4 == 3 || i == n - 1) {
 	  printf("\n");
 	}
+  }
+  return 0;
+}
+
+static int cmd_p(char *args) {
+  if (args == NULL) {
+    printf("Invalid argument\n");
+    return 0;
+  }
+  bool success = true;
+  uint32_t result = expr(args, &success);
+  if (success) {
+    printf("%u\n", result);
+  } else {
+    printf("Invalid expression: %s\n", args);
   }
   return 0;
 }
